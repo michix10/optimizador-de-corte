@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Optimizador de Corte de Tableros</title>
-    <link rel="manifest" href="manifest.json" />
+    <link rel="manifest" href="/optimizador-de-corte/manifest.json" />
     <meta name="theme-color" content="#4f46e5" />
     <script>
         // Prevents flash of incorrect theme
@@ -15,6 +15,7 @@
         }
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="importmap">
 {
   "imports": {
@@ -29,12 +30,21 @@
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
     <div id="root"></div>
-    <script type="module" src="index.tsx"></script>
+    <script type="text/babel" data-presets="react,typescript" data-type="module" src="/optimizador-de-corte/index.tsx"></script>
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(registration => {
+                navigator.serviceWorker.register('/optimizador-de-corte/sw.js').then(registration => {
                     console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
                 }, err => {
                     console.log('ServiceWorker registration failed: ', err);
                 });
