@@ -1,18 +1,6 @@
 {
   "short_name": "OptiCorte",
   "name": "Optimizador de Corte de Tableros",
-  "icons": [
-    {
-      "src": "/optimizador-de-corte/icons/icon-192x192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "/optimizador-de-corte/icons/icon-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
   "start_url": "/optimizador-de-corte/",
   "display": "standalone",
   "theme_color": "#4f46e5",
