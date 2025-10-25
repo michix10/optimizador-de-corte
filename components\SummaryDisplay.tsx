@@ -1,6 +1,7 @@
 
+
 import React from 'react';
-import { PlacedPiece, EdgeBanding } from '../types';
+import { PlacedPiece, EdgeBanding } from '../types.ts';
 
 interface SummaryDisplayProps {
   pieces: PlacedPiece[];
@@ -70,6 +71,46 @@ const SummaryDisplay: React.FC<SummaryDisplayProps> = ({ pieces }) => {
         <div className="mt-8 p-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg">
             <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Desglose de Piezas Utilizadas</h3>
             <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Medidas (cm)
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Cantidad
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        {summary.map((item, index) => (
+                            <tr key={index}>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <span className="font-mono text-sm">
+                                        <span className="relative inline-block px-1">
+                                            {item.width}
+                                            <BandingIndicator banding={item.widthBanding} />
+                                        </span>
+                                        x
+                                        <span className="relative inline-block px-1">
+                                            {item.height}
+                                            <BandingIndicator banding={item.heightBanding} />
+                                        </span>
+                                    </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <span className="text-sm font-medium">{item.quantity}</span>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+};
+
+export default SummaryDisplay;            <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
