@@ -1,6 +1,5 @@
-const CACHE_NAME = 'opticorte-cache-v5';
+const CACHE_NAME = 'opticorte-cache-v6';
 const URLS_TO_CACHE = [
-  '/optimizador-de-corte/',
   '/optimizador-de-corte/index.html',
   '/optimizador-de-corte/manifest.json'
 ];
@@ -35,6 +34,42 @@ self.addEventListener('fetch', event => {
         }
 
         // Si no estĂ¡ en cachĂ©, ir a la red
+        return fetch(event.request).then(
+          response => {
+            // No cacheamos respuestas de extensiones de Chrome u otros tipos no bĂ¡sicos
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // Clona la respuesta porque es un stream y solo se puede consumir una vez
+            const responseToCache = response.clone();
+
+            caches.open(CACHE_NAME)
+              .then(cache => {
+                cache.put(event.request, responseToCache);
+              });
+
+            return response;
+          }
+        );
+      })
+    );
+});
+
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});        // Si no estĂ¡ en cachĂ©, ir a la red
         return fetch(event.request).then(
           response => {
             // No cacheamos respuestas de extensiones de Chrome u otros tipos no bĂ¡sicos
