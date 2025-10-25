@@ -1,4 +1,5 @@
-import { Piece, Panel, PlacedPiece, Offcut, Rotation } from '../types';
+
+import { Piece, Panel, PlacedPiece, Offcut, Rotation } from '../types.ts';
 
 interface Node {
   x: number;
