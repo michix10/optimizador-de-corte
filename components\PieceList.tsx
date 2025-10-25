@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { Piece, EdgeBanding, Rotation } from '../types';
+import { Piece, EdgeBanding, Rotation } from '../types.ts';
 
 interface PieceListProps {
   pieces: Piece[];
@@ -70,6 +71,77 @@ const PieceList: React.FC<PieceListProps> = ({ pieces, onRemovePiece, onUpdatePi
                   title: 'Rotación de 90° forzada (a contraveta)',
                   'aria-label': 'Rotación forzada',
               };
+          case Rotation.Allowed:
+              return {
+                  className: 'text-green-500 hover:text-green-600',
+                  title: 'Rotación de 90° permitida (ignora veta)',
+                  'aria-label': 'Rotación permitida',
+              };
+          case Rotation.None:
+          default:
+              return {
+                  className: 'text-gray-400 hover:text-gray-500',
+                  title: 'Rotación no permitida (respeta veta)',
+                  'aria-label': 'Rotación no permitida',
+              };
+      }
+  };
+
+  return (
+    <div className="mt-6 p-4 bg-white dark:bg-gray-800 shadow-md rounded-lg">
+      <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Lista de Piezas</h2>
+      {pieces.length === 0 ? (
+        <p className="text-gray-500 dark:text-gray-400">No hay piezas en la lista.</p>
+      ) : (
+        <ul className="space-y-3 max-h-96 overflow-y-auto pr-2">
+          {pieces.map((piece) => (
+            <li key={piece.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-md">
+              <div className="font-mono text-sm">
+                 <span 
+                    className="relative inline-block px-2 py-1 cursor-pointer"
+                    onClick={() => handleBandingClick(piece, 'width')}
+                    title={`Canto Ancho: ${piece.widthBanding}`}
+                >
+                    {piece.width}
+                    <BandingIndicator banding={piece.widthBanding} />
+                </span>
+                <span className="mx-1">x</span>
+                <span 
+                    className="relative inline-block px-2 py-1 cursor-pointer"
+                    onClick={() => handleBandingClick(piece, 'height')}
+                    title={`Canto Largo: ${piece.heightBanding}`}
+                >
+                    {piece.height}
+                    <BandingIndicator banding={piece.heightBanding} />
+                </span>
+                <span className="ml-1">cm</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                    onClick={() => handleRotateClick(piece)}
+                    {...getRotationButtonProps(piece.rotation)}
+                >
+                    <RotateIcon rotation={piece.rotation} />
+                </button>
+                <button
+                    onClick={() => onRemovePiece(piece.id)}
+                    className="text-red-500 hover:text-red-700 dark:hover:text-red-400"
+                    aria-label={`Eliminar pieza ${piece.width}x${piece.height}`}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clipRule="evenodd" />
+                    </svg>
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+export default PieceList;              };
           case Rotation.Allowed:
               return {
                   className: 'text-green-500 hover:text-green-600',
