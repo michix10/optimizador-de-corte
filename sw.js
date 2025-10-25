@@ -88,6 +88,34 @@ self.addEventListener('activate', event => {
       );
     })
   );
+});            if (isAppResource) {
+                const responseToCache = response.clone();
+                caches.open(CACHE_NAME)
+                  .then(cache => {
+                    cache.put(event.request, responseToCache);
+                  });
+            }
+
+            return response;
+          }
+        );
+      })
+    );
+});
+
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
 });      .then(response => {
         // Cache hit - return response
         if (response) {
