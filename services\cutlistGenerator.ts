@@ -1,4 +1,5 @@
-import { Panel, PlacedPiece } from '../types';
+
+import { Panel, PlacedPiece } from '../types.ts';
 
 export interface CrossCut {
   position: number; // x-position relative to the strip
