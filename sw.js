@@ -1,4 +1,4 @@
-const CACHE_NAME = 'opticorte-cache-v3';
+const CACHE_NAME = 'opticorte-cache-v4';
 const URLS_TO_CACHE = [
   '/optimizador-de-corte/',
   '/optimizador-de-corte/index.html',
@@ -16,9 +16,7 @@ const URLS_TO_CACHE = [
   '/optimizador-de-corte/components/Configuration.tsx',
   '/optimizador-de-corte/components/CostSummary.tsx',
   '/optimizador-de-corte/components/CutListDisplay.tsx',
-  '/optimizador-de-corte/components/GitHubTokenModal.tsx',
-  'https://cdn.tailwindcss.com',
-  'https://unpkg.com/@babel/standalone/babel.min.js'
+  '/optimizador-de-corte/components/GitHubTokenModal.tsx'
 ];
 
 self.addEventListener('install', event => {
@@ -26,15 +24,71 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME)
       .then(cache => {
         console.log('Opened cache');
-        return cache.addAll(URLS_TO_CACHE);
+        // Usamos { cache: "reload" } para evitar problemas con la caché del navegador al buscar los ficheros
+        const requests = URLS_TO_CACHE.map(url => new Request(url, { cache: 'reload' }));
+        return cache.addAll(requests);
+      }).catch(err => {
+        console.error('Failed to cache during install:', err);
       })
   );
 });
 
 self.addEventListener('fetch', event => {
+  // Ignoramos las peticiones que no son GET
+  if (event.request.method !== 'GET') {
+    return;
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then(response => {
+        // Cache hit - return response
+        if (response) {
+          return response;
+        }
+
+        const fetchRequest = event.request.clone();
+
+        return fetch(fetchRequest).then(
+          response => {
+            // Check if we received a valid response
+            // No cacheamos respuestas de extensiones de Chrome u otros tipos no básicos/cors
+            if (!response || response.status !== 200 || (response.type !== 'basic' && response.type !== 'cors')) {
+              return response;
+            }
+            
+            // No cacheamos ficheros de CDN externos aquí, se manejan por el navegador.
+            // Solo cacheamos los recursos de nuestro propio origen.
+            const isAppResource = URLS_TO_CACHE.some(url => event.request.url.endsWith(url));
+            if (isAppResource) {
+                const responseToCache = response.clone();
+                caches.open(CACHE_NAME)
+                  .then(cache => {
+                    cache.put(event.request, responseToCache);
+                  });
+            }
+
+            return response;
+          }
+        );
+      })
+    );
+});
+
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});      .then(response => {
         // Cache hit - return response
         if (response) {
           return response;
