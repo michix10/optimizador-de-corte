@@ -1,0 +1,5 @@
+{
+  "name": "Optimizador de Corte de Tableros",
+  "description": "Una aplicaciÃ³n para optimizar el corte de tableros de aglomerado, minimizando el desperdicio. Permite a los usuarios introducir piezas, especificar el canteado y visualizar el plano de corte optimizado.",
+  "requestFramePermissions": []
+}
