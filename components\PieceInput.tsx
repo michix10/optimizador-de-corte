@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { EdgeBanding, Rotation } from '../types';
+import { EdgeBanding, Rotation } from '../types.ts';
 
 interface PieceInputProps {
   onAddPiece: (width: number, height: number, quantity: number, widthBanding: EdgeBanding, heightBanding: EdgeBanding, rotation: Rotation) => void;
@@ -70,6 +71,78 @@ const PieceInput: React.FC<PieceInputProps> = ({ onAddPiece }) => {
               className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               placeholder="e.g., 60"
                step="0.1"
+            />
+          </div>
+          <div>
+            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Cantidad</label>
+            <input
+              type="number"
+              id="quantity"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              onFocus={handleFocus}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              min="1"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="widthBanding" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Canto en Ancho</label>
+            <select
+              id="widthBanding"
+              value={widthBanding}
+              onChange={(e) => setWidthBanding(e.target.value as EdgeBanding)}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              {bandingOptions.map(option => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="heightBanding" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Canto en Largo</label>
+            <select
+              id="heightBanding"
+              value={heightBanding}
+              onChange={(e) => setHeightBanding(e.target.value as EdgeBanding)}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              {bandingOptions.map(option => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+        
+        <div className="pt-2">
+            <label htmlFor="rotation" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Orientación de Veta</label>
+            <select
+              id="rotation"
+              value={rotation}
+              onChange={(e) => setRotation(e.target.value as Rotation)}
+              className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+                <option value={Rotation.None}>Respetar veta (No rotar)</option>
+                <option value={Rotation.Allowed}>Permitir rotación (Ignorar veta)</option>
+                <option value={Rotation.Forced}>Forzar rotación 90° (A contraveta)</option>
+            </select>
+        </div>
+
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        <button
+          type="submit"
+          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Añadir Pieza
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export default PieceInput;               step="0.1"
             />
           </div>
           <div>
